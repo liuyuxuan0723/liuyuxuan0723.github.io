@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","Pisces | Gemini":240,"display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言每次使用新设备，最最最讨厌的就是配环境，程序员懂得都懂，特别是笔者这种有强迫症的，一定要都配好了才能开始工作，痛定思痛，写一个一键配置的脚本，方便平常环境迁移。 该脚本主要包含了日常工作使用的cli工具和各语言环境，每个都写好了安装指令，都是笔者常用的配置，直接运行也可以，会跳过已经安装的版本。目前只支持mac一键安装，win太麻烦了懒得写，还可能有各种奇怪的问题。 工具介绍这儿只是抛出个引子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="效率工具整理">
+<meta property="og:url" content="http://example.com/2024/03/14/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/index.html">
+<meta property="og:site_name" content="人生是旷野 不是轨道">
+<meta property="og:description" content="前言每次使用新设备，最最最讨厌的就是配环境，程序员懂得都懂，特别是笔者这种有强迫症的，一定要都配好了才能开始工作，痛定思痛，写一个一键配置的脚本，方便平常环境迁移。 该脚本主要包含了日常工作使用的cli工具和各语言环境，每个都写好了安装指令，都是笔者常用的配置，直接运行也可以，会跳过已经安装的版本。目前只支持mac一键安装，win太麻烦了懒得写，还可能有各种奇怪的问题。 工具介绍这儿只是抛出个引子">
+<meta property="og:locale">
+<meta property="article:published_time" content="2024-03-14T14:30:59.000Z">
+<meta property="article:modified_time" content="2024-03-14T14:31:16.593Z">
+<meta property="article:author" content="一颗贝极星">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/03/14/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>效率工具整理 | 人生是旷野 不是轨道</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">人生是旷野 不是轨道</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="https://github.com/liuyuxuan0723" rel="noopener" target="_blank"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/14/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="一颗贝极星">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="人生是旷野 不是轨道">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          效率工具整理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-03-14 22:30:59 / Modified: 22:31:16" itemprop="dateCreated datePublished" datetime="2024-03-14T22:30:59+08:00">2024-03-14</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus: </span>
+    
+    <a title="disqus" href="/2024/03/14/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2024/03/14/效率工具整理/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>每次使用新设备，最最最讨厌的就是配环境，程序员懂得都懂，特别是笔者这种有强迫症的，一定要都配好了才能开始工作，痛定思痛，写一个一键配置的脚本，方便平常环境迁移。</p>
+<p>该脚本主要包含了日常工作使用的cli工具和各语言环境，每个都写好了安装指令，都是笔者常用的配置，直接运行也可以，会跳过已经安装的版本。目前只支持mac一键安装，win太麻烦了懒得写，还可能有各种奇怪的问题。</p>
+<h2 id="工具介绍"><a href="#工具介绍" class="headerlink" title="工具介绍"></a>工具介绍</h2><p>这儿只是抛出个引子大概介绍下每个工具干啥的怎么使用，也可以直接去官网看文档，会详细点。</p>
+<p><strong>命令行工具：</strong></p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/Homebrew/brew">Homebrew</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh">oh my zsh</a></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/git/git.plugin.zsh">git</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/kubectl">kubectl</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/jonmosco/kube-ps1">kube-ps1</a> (命令行中显示当前kubeconfig对应的集群)</li>
+</ul>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://jqlang.github.io/jq/">jq</a>（解析 JSON）</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://mikefarah.gitbook.io/yq/">yq</a>（解析 YAML）</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/sharkdp/bat">bat</a>（cat 的升级版）</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/wting/autojump">j</a>（模糊文件路径切换）</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.mycli.net/">mycli</a>（带高亮、补全的 MySQL 客户端）</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://k9scli.io/">k9s</a>（K8s 集群管理）</p>
+</li>
+</ul>
+<p><strong>开发环境：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://go.dev/">golang</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推荐使用一个多版本管理工具，可以自由切换golang版本 https://github.com/voidint/g</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">It is recommended to clear the `GOROOT`, `GOBIN`, and other environment variables before installation.</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">echo</span> <span class="string">&quot;unalias g&quot;</span> &gt;&gt; ~/.bashrc <span class="comment"># Optional. If other programs (such as `git`) have used `g` as an alias.</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">source</span> <span class="string">&quot;<span class="variable">$HOME</span>/.g/env&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.python.org/">python</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推荐使用miniconda</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">https://docs.anaconda.com/free/miniconda/miniconda-install/</span></span><br><span class="line">brew cask install miniconda</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.java.com/zh-CN/">Java</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">推荐使用jenv 来进行多版本的java管理</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">https://www.jenv.be/</span></span><br><span class="line">brew install jenv</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.docker.com/">docker</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">brew install --cask docker</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>开发工具：</strong></p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/zh-cn/go/">goland</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/zh-cn/idea/">idea</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/">vscode</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://apifox.com/">apifox</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.navicat.com.cn/">navicat</a></p>
+</li>
+</ul>
+<h2 id="安装脚本"><a href="#安装脚本" class="headerlink" title="安装脚本"></a>安装脚本</h2><p>先写个模板，后面再补</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">successful_tools=()</span><br><span class="line">failed_tools=()</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装工具并打印结果</span></span><br><span class="line">install_and_print_result() &#123;</span><br><span class="line">    echo &quot;安装 $1...&quot;</span><br><span class="line">    $2</span><br><span class="line">    if [ $? -eq 0 ]; then</span><br><span class="line">        echo &quot;$1 安装成功！&quot;</span><br><span class="line">        successful_tools+=(&quot;$1&quot;)</span><br><span class="line">    else</span><br><span class="line">        echo &quot;$1 安装失败！&quot;</span><br><span class="line">        failed_tools+=(&quot;$1&quot;)</span><br><span class="line">    fi</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装Homebrew</span></span><br><span class="line">install_homebrew() &#123;</span><br><span class="line">    /bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装oh my zsh</span></span><br><span class="line">install_ohmyzsh() &#123;</span><br><span class="line">    /bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装git插件</span></span><br><span class="line">install_git_plugin() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装kubectl插件函数</span></span><br><span class="line">install_kubectl_plugin() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装kube-ps1插件函数</span></span><br><span class="line">install_kube_ps1_plugin() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装jq函数</span></span><br><span class="line">install_jq() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装yq函数</span></span><br><span class="line">install_yq() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装bat函数</span></span><br><span class="line">install_bat() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装j函数</span></span><br><span class="line">install_j() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装mycli函数</span></span><br><span class="line">install_mycli() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">定义安装k9s函数</span></span><br><span class="line">install_k9s() &#123;</span><br><span class="line">    # 具体的安装指令</span><br><span class="line">    # 安装方式自行填写</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装Homebrew</span></span><br><span class="line">install_and_print_result &quot;Homebrew&quot; install_homebrew</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装oh my zsh</span></span><br><span class="line">install_and_print_result &quot;oh my zsh&quot; install_ohmyzsh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装git插件</span></span><br><span class="line">install_and_print_result &quot;git插件&quot; install_git_plugin</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装kubectl插件</span></span><br><span class="line">install_and_print_result &quot;kubectl插件&quot; install_kubectl_plugin</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装kube-ps1插件</span></span><br><span class="line">install_and_print_result &quot;kube-ps1插件&quot; install_kube_ps1_plugin</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装jq</span></span><br><span class="line">install_and_print_result &quot;jq&quot; install_jq</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装yq</span></span><br><span class="line">install_and_print_result &quot;yq&quot; install_yq</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装bat</span></span><br><span class="line">install_and_print_result &quot;bat&quot; install_bat</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装j</span></span><br><span class="line">install_and_print_result &quot;j&quot; install_j</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装mycli</span></span><br><span class="line">install_and_print_result &quot;mycli&quot; install_mycli</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">安装k9s</span></span><br><span class="line">install_and_print_result &quot;k9s&quot; install_k9s</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">输出安装结果</span></span><br><span class="line">echo &quot;&quot;</span><br><span class="line"></span><br><span class="line">for tool in &quot;$&#123;successful_tools[@]&#125;&quot;; do</span><br><span class="line">    echo &quot;$tool 成功&quot;</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line">for tool in &quot;$&#123;failed_tools[@]&#125;&quot;; do</span><br><span class="line">    echo &quot;$tool 失败&quot;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+
+
+<p>未完待续。。。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/14/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">工具介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC"><span class="nav-number">3.</span> <span class="nav-text">安装脚本</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="一颗贝极星"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">一颗贝极星</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/liuyuxuan0723" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;liuyuxuan0723" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/1171933519@11.com" title="E-Mail → 1171933519@11.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一颗贝极星</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://liuyuxuan.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://example.com/2024/03/14/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/";
+    this.page.identifier = "2024/03/14/效率工具整理/";
+    this.page.title = "效率工具整理";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://liuyuxuan.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
