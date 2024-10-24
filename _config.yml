@@ -102,8 +102,8 @@ theme: next
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/liuyuxuan0723/liuyuxuan0723.github.io # https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io
-  branch: main
+  repo: git@github.com:liuyuxuan0723/liuyuxuan0723.github.io.git # https://bitbucket.org/JohnSmith/johnsmith.bitbucket.io
+  branch: gh-pages
 
 sitemap:
   path: 
