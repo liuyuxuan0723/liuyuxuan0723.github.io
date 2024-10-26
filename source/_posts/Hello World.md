@@ -1,7 +1,7 @@
 ---
 title: Hello World
 date: 2024-03-14 22:30:59
-tags: [test,test1]
+tags: 
 ---
 # 为什么要写博客
 
