@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Promethues手册</title>
+    <url>/2024/03/14/Promethues%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h2 id="Metrics类型"><a href="#Metrics类型" class="headerlink" title="Metrics类型"></a>Metrics类型</h2><p>promethues指标以向量的形式存储在时序数据中，每种metrics的存储都是一样的，但使用场景存在一定差异</p>
+<h4 id="Counter-只增不减的计数器"><a href="#Counter-只增不减的计数器" class="headerlink" title="Counter 只增不减的计数器"></a>Counter 只增不减的计数器</h4><ul>
+<li>http_requests_total   服务器请求总数</li>
+<li>node_cpu  cpu使用总时长</li>
+</ul>
+<p>一般counter类型的指标建议以 total结尾</p>
+<p>通过内置的PromQL可以进一步的聚合这些数据</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 计算5m中内请求的变化速率，可以理解为截取5m中内的每秒的平均请求数</span><br><span class="line">rate(http_requests_total[5m])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 计算请求最多的是个服务器</span><br><span class="line">topk(10, http_requests_total)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Gauge-可增可减的仪表盘"><a href="#Gauge-可增可减的仪表盘" class="headerlink" title="Gauge 可增可减的仪表盘"></a>Gauge 可增可减的仪表盘</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 当前node空闲的内存大小</span><br><span class="line">node_memory_MemFree</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对于Gauge，可以使用delta函数返回一段时间内的变化情况</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">delta(cpu_temp_celsius&#123;host=&quot;zeus&quot;&#125;[2h])</span><br><span class="line">// 回归函数，根据1h内的文件变化情况，预测4h后的文件占用情况</span><br><span class="line">predict_linear(node_filesystem_free&#123;job=&quot;node&quot;&#125;[1h], 4 * 3600)</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Histogram-与-Summary-数据分布指标"><a href="#Histogram-与-Summary-数据分布指标" class="headerlink" title="Histogram 与 Summary 数据分布指标"></a>Histogram 与 Summary 数据分布指标</h3><p>对于统计类的指标，可能会出现长尾问题，如时延指标，一个过高的请求可能会拉高整体的请求时长，所以有一种指标可以直接对所有的指标进行分桶统计</p>
+<ul>
+<li>Summary指标<ul>
+<li>以下样本当前Prometheus Server进行wal_fsync操作的总次数为216次，耗时2.888716127000002s。其中中位数（quantile&#x3D;0.5）的耗时为0.012352463，9分位数（quantile&#x3D;0.9）的耗时为0.014458005s。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># HELP prometheus_tsdb_wal_fsync_duration_seconds Duration of WAL fsync.</span><br><span class="line"># TYPE prometheus_tsdb_wal_fsync_duration_seconds summary</span><br><span class="line">prometheus_tsdb_wal_fsync_duration_seconds&#123;quantile=&quot;0.5&quot;&#125; 0.012352463</span><br><span class="line">prometheus_tsdb_wal_fsync_duration_seconds&#123;quantile=&quot;0.9&quot;&#125; 0.014458005</span><br><span class="line">prometheus_tsdb_wal_fsync_duration_seconds&#123;quantile=&quot;0.99&quot;&#125; 0.017316173</span><br><span class="line">prometheus_tsdb_wal_fsync_duration_seconds_sum 2.888716127000002</span><br><span class="line">prometheus_tsdb_wal_fsync_duration_seconds_count 216</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>Histogram指标<ul>
+<li>直接反应每个区间内的样本数</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># HELP prometheus_tsdb_compaction_chunk_range Final time range of chunks on their first compaction</span><br><span class="line"># TYPE prometheus_tsdb_compaction_chunk_range histogram</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;100&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;400&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;1600&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;6400&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;25600&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;102400&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;409600&quot;&#125; 0</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;1.6384e+06&quot;&#125; 260</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;6.5536e+06&quot;&#125; 780</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;2.62144e+07&quot;&#125; 780</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_bucket&#123;le=&quot;+Inf&quot;&#125; 780</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_sum 1.1540798e+09</span><br><span class="line">prometheus_tsdb_compaction_chunk_range_count 780</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="PromQL"><a href="#PromQL" class="headerlink" title="PromQL"></a>PromQL</h2><p>通过定义的一组metrics name和label指定时间序列，从而进一步的对数据进行聚合计算</p>
+<ul>
+<li>查询时间序列<ul>
+<li>支持 &#x3D; 和 !&#x3D;两种类型</li>
+<li>使用 label&#x3D;<del>regx 进行正则匹配，label!</del>regx进行排除</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http_requests_total&#123;code=&quot;200&quot;,handler=&quot;alerts&quot;,instance=&quot;localhost:9090&quot;,job=&quot;prometheus&quot;,method=&quot;get&quot;&#125;=(20889@1518096812.326)</span><br><span class="line">http_requests_total&#123;code=&quot;200&quot;,handler=&quot;graph&quot;,instance=&quot;localhost:9090&quot;,job=&quot;prometheus&quot;,method=&quot;get&quot;&#125;=(21287@1518096812.326)</span><br><span class="line"></span><br><span class="line">// 多个查询</span><br><span class="line">http_requests_total&#123;environment=~&quot;staging|testing|development&quot;,method!=&quot;GET&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>数学运算</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node_memory_free_bytes_total / (1024 * 1024)</span><br><span class="line"></span><br><span class="line">// 计算使用率超过95%的主机</span><br><span class="line">(node_memory_bytes_total - node_memory_free_bytes_total) / node_memory_bytes_total &gt; 0.95</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>聚合操作</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sum (求和)</span><br><span class="line">min (最小值)</span><br><span class="line">max (最大值)</span><br><span class="line">avg (平均值)</span><br><span class="line">stddev (标准差)</span><br><span class="line">stdvar (标准方差)</span><br><span class="line">count (计数)</span><br><span class="line">count_values (对value进行计数)</span><br><span class="line">bottomk (后n条时序)</span><br><span class="line">topk (前n条时序)</span><br><span class="line">quantile (分位数)</span><br><span class="line"></span><br><span class="line">sum(http_requests_total)</span><br><span class="line">count_values(&quot;count&quot;, http_requests_total)</span><br><span class="line">topk(5, http_requests_total)</span><br><span class="line">quantile(0.5, http_requests_total)</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>内置函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 增长量</span><br><span class="line">increase(node_cpu[2m]) / 120</span><br><span class="line">// 等同于上面，直接计算增长率</span><br><span class="line">rate(node_cpu[2m])</span><br><span class="line">// 更灵敏的增长率，通过区间向量中最后两个样本数据来计算区间向量的计算瞬时增长率，用上面的容易陷入长尾问题</span><br><span class="line">irate(node_cpu[2m])</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="黄金指标"><a href="#黄金指标" class="headerlink" title="黄金指标"></a>黄金指标</h2><p>Four Golden Signals是Google针对大量分布式监控的经验总结，4个黄金指标可以在服务级别帮助衡量终端用户体验、服务中断、业务影响等层面的问题。主要关注与以下四种类型的指标：延迟，通讯量，错误以及饱和度：</p>
+<ul>
+<li>延迟：服务请求所需时间，可用Histogram指标来计算</li>
+</ul>
+<p>记录用户所有请求所需的时间，重点是要区分成功请求的延迟时间和失败请求的延迟时间。 例如在数据库或者其他关键祸端服务异常触发HTTP 500的情况下，用户也可能会很快得到请求失败的响应内容，如果不加区分计算这些请求的延迟，可能导致计算结果与实际结果产生巨大的差异。除此以外，在微服务中通常提倡“快速失败”，开发人员需要特别注意这些延迟较大的错误，因为这些缓慢的错误会明显影响系统的性能，因此追踪这些错误的延迟也是非常重要的。</p>
+<ul>
+<li>通讯量：监控当前系统的流量，用于衡量服务的容量需求，req_total</li>
+</ul>
+<p>流量对于不同类型的系统而言可能代表不同的含义。例如，在HTTP REST API中, 流量通常是每秒HTTP请求数；</p>
+<ul>
+<li>错误：监控当前系统所有发生的错误请求，衡量当前系统错误发生的速率，通过httpcode label过滤</li>
+</ul>
+<p>对于失败而言有些是显式的(比如, HTTP 500错误)，而有些是隐式(比如，HTTP响应200，但实际业务流程依然是失败的)。</p>
+<p>对于一些显式的错误如HTTP 500可以通过在负载均衡器(如Nginx)上进行捕获，而对于一些系统内部的异常，则可能需要直接从服务中添加钩子统计并进行获取。</p>
+<ul>
+<li>饱和度：衡量当前服务的饱和度。</li>
+</ul>
+<p>主要强调最能影响服务状态的受限制的资源。 例如，如果系统主要受内存影响，那就主要关注系统的内存状态，如果系统主要受限于磁盘I&#x2F;O，那就主要观测磁盘I&#x2F;O的状态。因为通常情况下，当这些资源达到饱和后，服务的性能会明显下降。同时还可以利用饱和度对系统做出预测，比如，“磁盘是否可能在4个小时候就满了”。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2024/03/14/Hello%20World/</url>
+    <content><![CDATA[<h1 id="为什么要写博客"><a href="#为什么要写博客" class="headerlink" title="为什么要写博客"></a>为什么要写博客</h1><ul>
+<li><p>方便梳理记忆</p>
+</li>
+<li><p>记录学习道路</p>
+</li>
+<li><p>锻炼文笔</p>
+<p>  最近刚校招入职一个月，部门的技术栈是云原生相关的，自己还是半路转行的Java Boy（本科测绘，研究生炼丹），这一个月磕磕绊绊算是理解了云原生到底是个啥，有哪些技术要学习。这几天也派了些活干，越做越发现要学的太多太多了，而且经常是学了后面忘前面，而且学的东西也不是立马就有对应的工作能做，索性开个博客记录一下，也希望大家能互相学习，顺便帮忙看看博文里有哪些问题～</p>
+<p>  其实也希望能给自己一点自驱力，平时自己记录笔记经常做着做着就没下文了，因为就自己看，也不关心后续可读性好不好🥺。现在公开了，想着说不定后面笔记写的不错，被大家催更，还能给自己点动力😂</p>
+</li>
+</ul>
+<h1 id="会写哪些内容"><a href="#会写哪些内容" class="headerlink" title="会写哪些内容"></a>会写哪些内容</h1><pre><code>目前应该主要是记录一些工作相关的技术栈学习，像golang、k8s、serverless这些，也会记录一些生活感悟吧。坚持坚持！
+</code></pre>
+]]></content>
+  </entry>
+  <entry>
+    <title>效率工具整理</title>
+    <url>/2024/03/14/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7%E6%95%B4%E7%90%86/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>每次使用新设备，最最最讨厌的就是配环境，程序员懂得都懂，特别是笔者这种有强迫症的，一定要都配好了才能开始工作，痛定思痛，写了一个快速配置的脚本，结合<a href="https://github.com/liuyuxuan0723/dotfiles">dotfile</a>可以快速搭建开发环境。</p>
+<blockquote>
+<p>虽然但是，直接替换dotfile还是会有部分配置不生效，比如某些字体没安装时，如果是私人使用的电脑还是mac自身的数据迁移好用点。。</p>
+</blockquote>
+<h2 id="mac开发环境的必装清单及配置脚本"><a href="#mac开发环境的必装清单及配置脚本" class="headerlink" title="mac开发环境的必装清单及配置脚本"></a>mac开发环境的必装清单及配置脚本</h2><ul>
+<li>常见的应用软件</li>
+<li>命令行工具</li>
+<li>开发环境</li>
+</ul>
+<p>快速开始</p>
+<h3 id="应用软件"><a href="#应用软件" class="headerlink" title="应用软件"></a>应用软件</h3><ul>
+<li><a href="https://github.com/Clash-Verge-rev/clash-verge-rev/releases">🪜</a></li>
+<li><a href="https://www.google.com/chrome/?brand=FKPE&ds_kid=43700081222624393&gad_source=1&gclid=CjwKCAjwp8--BhBREiwAj7og176VBNdx_nh44ppjIG9Y-UJx_-ifOFELFdtp1oUMC-abHCwhBI1zbhoCjVcQAvD_BwE&gclsrc=aw.ds">chrome</a></li>
+<li><a href="https://typoraio.cn/">typora</a></li>
+<li><a href="https://code.visualstudio.com/">vscode</a></li>
+<li><a href="https://www.cursor.com/cn">cursor</a></li>
+<li><a href="https://www.jetbrains.com/go/">goland</a></li>
+<li><a href="https://poe.com/login">poe</a></li>
+<li><a href="https://www.docker.com/products/docker-desktop/">docker</a></li>
+<li><a href="https://www.feishu.cn/">lark</a></li>
+<li><a href="https://weixin.qq.com/">wechat</a></li>
+<li><a href="https://iterm2.com/downloads.html">iterms</a></li>
+<li>navicate</li>
+<li>postman</li>
+</ul>
+<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><ul>
+<li><a href="https://brew.sh/">brew</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://git-scm.com/">git</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install git</span><br><span class="line"></span><br><span class="line">git config --global user.name &quot;liuyuxuan&quot;</span><br><span class="line">git config --global user.email &quot;liuyuxuan7723gmail.com&quot;</span><br><span class="line"></span><br><span class="line">ssh-keygen -t rsa -b 4096 -C &quot;liuyuxuan7723gmail.com&quot;</span><br><span class="line">cat ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://ohmyz.sh/#install">oh-my-zsh</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone --depth=1 https://github.com/romkatv/powerlevel10k.git &quot;$&#123;ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom&#125;/themes/powerlevel10k&quot;</span><br><span class="line">echo &#x27;source ~/powerlevel10k/powerlevel10k.zsh-theme&#x27; &gt;&gt;~/.zshrc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>zsh-autosuggestions &amp;&amp; zsh-syntax-highlighting</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/zsh-users/zsh-autosuggestions $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-autosuggestions</span><br><span class="line"></span><br><span class="line">git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;/plugins/zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://kubernetes.io/docs/reference/kubectl/">kubectl</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install kubernetes-cli</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://k9scli.io/">K9s</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install k9s</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/jonmosco/kube-ps1">kube-ps1</a>: 显示当前K8s context</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew update</span><br><span class="line">brew install kube-ps1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/mikefarah/yq">yq</a> : 啥都能解</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install yq</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/sunny0826/kubecm">kubecm</a>: 多集群kubeconfig管理</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install kubecm</span><br></pre></td></tr></table></figure>
+
+<h3 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h3><ul>
+<li><a href="https://www.anaconda.com/docs/getting-started/miniconda/main">miniconda</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install --cask miniconda</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/voidint/g">golang</a>：使用 g 工具进行多版本管理</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">It is recommended to clear the `GOROOT`, `GOBIN`, and other environment variables before installation.</span></span><br><span class="line">curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash</span><br><span class="line">cat &lt;&lt; &#x27;EOF&#x27; &gt;&gt; ~/.zshrc</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Check <span class="keyword">if</span> the <span class="built_in">alias</span> <span class="string">&#x27;g&#x27;</span> exists before trying to <span class="built_in">unalias</span> it</span></span><br><span class="line">if [[ -n $(alias g 2&gt;/dev/null) ]]; then</span><br><span class="line">    unalias g</span><br><span class="line">fi</span><br><span class="line">EOF </span><br><span class="line">source &quot;$HOME/.g/env&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/tj/n">node</a></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n | bash -s install lts</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">If you want n installed, you can use npm now.</span></span><br><span class="line">npm install -g n</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://github.com/shyiko/jabba">Java</a>: 这个工具没用过，但是先列着</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export JABBA_VERSION=...</span><br><span class="line">curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | bash &amp;&amp; . ~/.jabba/jabba.sh</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置脚本"><a href="#配置脚本" class="headerlink" title="配置脚本"></a>配置脚本</h2><h3 id="一键安装各种工具脚本"><a href="#一键安装各种工具脚本" class="headerlink" title="一键安装各种工具脚本"></a>一键安装各种工具脚本</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./brew.sh</span><br><span class="line">./config.sh</span><br><span class="line">./syncRemote.sh</span><br><span class="line">./syncLocal.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="dotfile同步到本地仓库"><a href="#dotfile同步到本地仓库" class="headerlink" title="dotfile同步到本地仓库"></a>dotfile同步到本地仓库</h3><ul>
+<li>同步时注意修改哪些需要同步</li>
+<li>超过2MB的文件夹限制了无法同步</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./syncToRemote.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="远端仓库配置同步到本地dotfile"><a href="#远端仓库配置同步到本地dotfile" class="headerlink" title="远端仓库配置同步到本地dotfile"></a>远端仓库配置同步到本地dotfile</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./syncToLocal.sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">on run &#123;input, parameters&#125;</span><br><span class="line">	-- 检查iTerm2是否已经打开</span><br><span class="line">	tell application &quot;System Events&quot;</span><br><span class="line">		set isRunning to (count of (every process whose name is &quot;iTerm2&quot;)) &gt; 0</span><br><span class="line">	end tell</span><br><span class="line"></span><br><span class="line">	-- 如果iTerm2没有运行，则启动它并创建一个新窗口</span><br><span class="line">	if not isRunning then</span><br><span class="line">		tell application &quot;iTerm&quot;</span><br><span class="line">			activate</span><br><span class="line">			create window with default profile</span><br><span class="line">		end tell</span><br><span class="line">	else</span><br><span class="line">		-- 如果iTerm2已经运行，切换到它并创建一个新窗口（如果需要）</span><br><span class="line">		tell application &quot;iTerm&quot;</span><br><span class="line">			activate</span><br><span class="line">			if (count of windows) = 0 then</span><br><span class="line">				create window with default profile</span><br><span class="line">			end if</span><br><span class="line">		end tell</span><br><span class="line">	end if</span><br><span class="line"></span><br><span class="line">	return input</span><br><span class="line">end run</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>tool</tag>
+      </tags>
+  </entry>
+</search>
