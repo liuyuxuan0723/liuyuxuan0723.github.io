@@ -47,8 +47,8 @@ hexo g && hexo s
 # 部署到远程仓库
 make deploy (或简写 hexo d)
 
-# 生成后立即部署
-hexo g && hexo d
+# 本地预览
+make run
 ```
 
 ### 其他常用命令
